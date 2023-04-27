@@ -34,3 +34,4 @@ void TaskOTA(void *parameters)
 #include <dev/vl6180x/tasks.h>
 #include <dev/vl6180x_us/tasks.h>
 #include <dev/vl53l0x_us/tasks.h>
+#include <dev/pcf8574/tasks.h>

@@ -173,6 +173,7 @@ void setup()
 #include <dev/vl6180x/setup.h>
 #include <dev/vl6180x_us/setup.h>
 #include <dev/vl53l0x_us/setup.h>
+#include <dev/pcf8574/setup.h>
 
 #if c_LCD == 1
   while (xSemaphoreTake(xSemaphoreX, (TickType_t)1) == pdFALSE)

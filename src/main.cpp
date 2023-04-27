@@ -45,7 +45,7 @@ float PR = -1;
 bool OtaStart = false;
 bool ECwork = false;
 bool USwork = false;
-int readGPIO, PWD1, PWD2;
+int readGPIO, PWD1, PWD2, PCF8574_cur;
 long ECStabOn;
 
 
@@ -101,6 +101,7 @@ SemaphoreHandle_t xSemaphoreX = NULL;
 #include <dev/vl6180x_us/main.cpp>
 #include <dev/vl53l0x_us/main.cpp>
 #include <dev/doser/main.cpp>
+#include <dev/pcf8574/main.cpp>
 
 #include <tasks.h>
 #include <httpserv.h>
