@@ -30,6 +30,11 @@ void TaskNTC(void *parameters) {
         // enableCore0WDT();
         // enableLoopWDT();
 
+        if (c_PCF8574 == 1) {
+            PCF8574_values[PCF8574_cur] -> NTCRM.add(float(NTC0) / NTC_MiddleCount);
+            PCF8574_values[PCF8574_cur] -> NTC = PCF8574_values[PCF8574_cur] -> NTCRM.getAverage();      
+        }
+
         NTCRM.add(float(NTC0) / NTC_MiddleCount);
         NTC = NTCRM.getAverage();
 
