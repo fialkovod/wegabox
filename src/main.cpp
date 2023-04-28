@@ -45,7 +45,7 @@ float PR = -1;
 bool OtaStart = false;
 bool ECwork = false;
 bool USwork = false;
-int readGPIO, PWD1, PWD2, PCF8574_cur;
+int readGPIO, PWD1, PWD2;
 long ECStabOn;
 
 
@@ -65,6 +65,24 @@ uint8_t appTaskCount = 0;
 #include <Wire.h>       // Шина I2C
 #define I2C_SDA 21      // SDA
 #define I2C_SCL 22      // SCL
+
+
+int PCF8574_cur;
+
+struct PCF8574_value {
+  float NTC;
+  float Ap;
+  float An;
+};
+
+struct PCF8574_param {
+  float EC_R1;
+  float EC_R2_p1;
+  float EC_R2_p2;
+};
+
+PCF8574_value PCF8574_values[16];
+PCF8574_param PCF8574_params[16];
 
 // syslog
 #include <etc/syslog/main.cpp>
