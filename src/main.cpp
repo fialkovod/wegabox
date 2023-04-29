@@ -71,8 +71,10 @@ int PCF8574_cur;
 
 struct PCF8574_value {
   float NTC;
+  RunningMedian NTCRM = RunningMedian(20);
   float Ap;
   float An;
+
 };
 
 struct PCF8574_param {

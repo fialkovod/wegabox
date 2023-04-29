@@ -2,7 +2,7 @@
     syslog_ng("PCF8574 start initial config for 0 port");
     Wire.begin();
     Wire.beginTransmission(0x20);
-    Wire.write(0x1);
+    Wire.write(0x0);
     Wire.endTransmission();
     syslog_ng("PCF8574 end of initial config");
 

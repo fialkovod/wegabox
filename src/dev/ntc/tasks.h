@@ -31,8 +31,10 @@ void TaskNTC(void *parameters) {
         // enableLoopWDT();
 
         if (c_PCF8574 == 1) {
-            PCF8574_values[PCF8574_cur] -> NTCRM.add(float(NTC0) / NTC_MiddleCount);
-            PCF8574_values[PCF8574_cur] -> NTC = PCF8574_values[PCF8574_cur] -> NTCRM.getAverage();      
+            PCF8574_values[PCF8574_cur].NTCRM.add(float(NTC0) / NTC_MiddleCount);
+            PCF8574_values[PCF8574_cur].NTC = PCF8574_values[PCF8574_cur].NTCRM.getAverage(); 
+            syslog_ng("NTC_cur: " + fFTS(float(NTC0) / NTC_MiddleCount, 3));     
+            syslog_ng("NTC"+ fFTS(PCF8574_cur, 0)+": " + fFTS(PCF8574_values[PCF8574_cur].NTC, 3));     
         }
 
         NTCRM.add(float(NTC0) / NTC_MiddleCount);
@@ -40,7 +42,6 @@ void TaskNTC(void *parameters) {
 
         NTC_time = millis() - NTC_time;
         syslog_ng("NTC:" + fFTS(NTC, 3));
-
         syslog_ng("NTC " + fFTS(NTC_time, 0) + "ms end.");
         NTC_old = millis();
         xSemaphoreGive(xSemaphoreX);

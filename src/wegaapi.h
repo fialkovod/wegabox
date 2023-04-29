@@ -10,6 +10,8 @@ void TaskWegaApi(void *parameters)
     
         // Отправка данных на WEGA-API
 
+    syslog_ng("WegaApi loop. NTC 0 = "+ String( PCF8574_values[0].NTC));
+    syslog_ng("WegaApi loop. NTC 1 = "+ String( PCF8574_values[1].NTC));
 
     String httpstr = wegaapi;
     httpstr += "?db=" + wegadb;
