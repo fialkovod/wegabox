@@ -31,10 +31,16 @@ void TaskDOSER(void *parameters)
           AD = preferences.getInt("StPumpA_D", 7);
           ADel = preferences.getInt("StPumpA_Del", 700);
           ARet = preferences.getInt("StPumpA_Ret", 700);
+          AExt=preferences.getInt("StPumpA_ExtDrv", 0);
+          ALv=preferences.getInt("StPumpA_OnLv", 1);
+          AEn=preferences.getInt("StPumpA_En", 12);
+          ASt=preferences.getInt("StPumpA_St", 13);
           mcp.pinMode(AA, OUTPUT);
           mcp.pinMode(AB, OUTPUT);
           mcp.pinMode(AC, OUTPUT);
           mcp.pinMode(AD, OUTPUT);
+          mcp.pinMode(AEn, OUTPUT);
+          mcp.pinMode(ASt, OUTPUT);
 
           BA = preferences.getInt("StPumpB_A", 8);
           BB = preferences.getInt("StPumpB_B", 9);
@@ -42,10 +48,16 @@ void TaskDOSER(void *parameters)
           BD = preferences.getInt("StPumpB_D", 11);
           BDel = preferences.getInt("StPumpB_Del", 700);
           BRet = preferences.getInt("StPumpB_Ret", 700);
+          BExt=preferences.getInt("StPumpB_ExtDrv", 0);
+          BLv=preferences.getInt("StPumpB_OnLv", 1);
+          BEn=preferences.getInt("StPumpB_En", 14);
+          BSt=preferences.getInt("StPumpB_St", 15);
           mcp.pinMode(BA, OUTPUT);
           mcp.pinMode(BB, OUTPUT);
           mcp.pinMode(BC, OUTPUT);
           mcp.pinMode(BD, OUTPUT);
+          mcp.pinMode(BEn, OUTPUT);
+          mcp.pinMode(BSt, OUTPUT);
 
           StPumpA_cStepMl = preferences.getFloat("StPumpA_cStepMl", 500);
           StPumpA_cMl = preferences.getFloat("StPumpA_cMl", 1);
@@ -59,11 +71,18 @@ void TaskDOSER(void *parameters)
           if (SetPumpA_Ml > 0 and AOn != 0)
           {
             syslog_ng("DOSER: PumpA Start");
-            // Облегчить старт коротким реверсом
-            for (long i = 0; i < 5; i++)
-              StepAB(1, 1, 1);
-            for (long i = 0; i < 5; i++)
-              StepAF(1, 1, 1);
+            if (AExt == 1)
+            {
+              bitWrite(bitw, AEn, ALv);
+              mcp.writeGPIOAB(bitw);
+              delayMicroseconds(10000);
+            } else {
+              // Облегчить старт коротким реверсом
+              for (long i = 0; i < 5; i++)
+                StepAB(1, 1, 1);
+              for (long i = 0; i < 5; i++)
+                StepAF(1, 1, 1);
+            }
 
             for (long i = 0; i < StPumpA_cStep; i++)
             {
@@ -73,6 +92,8 @@ void TaskDOSER(void *parameters)
                 // mcp.writeGPIOAB(0);
                 bitW4(AA, AB, AC, AD, 0, 0, 0, 0);
                 bitW4(BA, BB, BC, BD, 0, 0, 0, 0);
+                bitWrite(bitw, AEn, 1-ALv);
+                bitWrite(bitw, ASt, 0);
                 mcp.writeGPIOAB(bitw);
                 preferences.putFloat("SetPumpA_Ml", SetPumpA_Ml - (StPumpA_cMl / StPumpA_cStepMl * i));
                 preferences.putFloat("SetPumpA_Ml_SUM", preferences.getFloat("SetPumpA_Ml_SUM", 0) + (StPumpA_cMl / StPumpA_cStepMl * i));
@@ -80,6 +101,12 @@ void TaskDOSER(void *parameters)
                 vTaskDelete(NULL);
               }
             }
+            if (AExt == 1)
+            {
+              bitWrite(bitw, AEn, 1-ALv);
+              mcp.writeGPIOAB(bitw);
+              delayMicroseconds(10000);
+            }  
             preferences.putFloat("SetPumpA_Ml", SetPumpA_Ml - (StPumpA_cMl / StPumpA_cStepMl * StPumpA_cStep));
 
             preferences.putFloat("SetPumpA_Ml_SUM", preferences.getFloat("SetPumpA_Ml_SUM", 0) + (StPumpA_cMl / StPumpA_cStepMl * StPumpA_cStep));
@@ -98,11 +125,18 @@ void TaskDOSER(void *parameters)
           if (SetPumpB_Ml > 0 and BOn != 0)
           {
             syslog_ng("DOSER: PumpB Start");
-            for (long i = 0; i < 5; i++)
-              StepBB(1, 1, 1);
-            for (long i = 0; i < 5; i++)
-              StepBF(1, 1, 1);
-
+            if (BExt == 1)
+            {
+              bitWrite(bitw, BEn, BLv);
+              mcp.writeGPIOAB(bitw);
+              delayMicroseconds(10000);
+            } else {
+              // Облегчить старт коротким реверсом
+              for (long i = 0; i < 5; i++)
+                StepBB(1, 1, 1);
+              for (long i = 0; i < 5; i++)
+                StepBF(1, 1, 1);
+            }
             for (long i = 0; i < StPumpB_cStep; i++)
             {
               StepBF(true, true, true);
@@ -112,6 +146,8 @@ void TaskDOSER(void *parameters)
                 // mcp.writeGPIOAB(0);
                 bitW4(AA, AB, AC, AD, 0, 0, 0, 0);
                 bitW4(BA, BB, BC, BD, 0, 0, 0, 0);
+                bitWrite(bitw, BEn, 1-BLv);
+                bitWrite(bitw, BSt, 0);
                 mcp.writeGPIOAB(bitw);
                 preferences.putFloat("SetPumpB_Ml", SetPumpB_Ml - (StPumpB_cMl / StPumpB_cStepMl * i));
 
@@ -119,6 +155,12 @@ void TaskDOSER(void *parameters)
                 preferences.putLong("PumpB_Step_SUM", preferences.getLong("PumpB_Step_SUM", 0) + i);
                 vTaskDelete(NULL);
               }
+            }
+            if (BExt == 1)
+            {
+              bitWrite(bitw, BEn, 1-BLv);
+              mcp.writeGPIOAB(bitw);
+              delayMicroseconds(10000);
             }
             preferences.putFloat("SetPumpB_Ml", SetPumpB_Ml - (StPumpB_cMl / StPumpB_cStepMl * StPumpB_cStep));
 
@@ -138,8 +180,12 @@ void TaskDOSER(void *parameters)
 
           bitW4(AA, AB, AC, AD, 0, 0, 0, 0);
           bitW4(BA, BB, BC, BD, 0, 0, 0, 0);
+          if (AExt == 1 or BExt == 1)
+          {
+            bitW4(AEn, ASt, BEn, BSt, 1-ALv, 0, 1-BLv, 0);
+          }  
           mcp.writeGPIOAB(bitw);
-
+          
           syslog_ng("DOSER: PumpA SUM ml=" + fFTS(preferences.getFloat("SetPumpA_Ml_SUM", 0), 2));
           syslog_ng("DOSER: PumpB SUM ml=" + fFTS(preferences.getFloat("SetPumpB_Ml_SUM", 0), 2));
         }

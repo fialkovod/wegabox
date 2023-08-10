@@ -10,6 +10,15 @@ void bitW4(int p1, int p2, int p3, int p4, int b1, int b2, int b3, int b4)
 // Шаг насоса А вперед
 void StepAF(bool phase1, bool phase2, bool cool)
 {
+    if (AExt == 1) {
+        bitWrite(bitw, ASt, 1);
+        mcp.writeGPIOAB(bitw);
+        delayMicroseconds(ARet);
+        bitWrite(bitw, ASt, 0);
+        mcp.writeGPIOAB(bitw);
+        delayMicroseconds(ADel);
+        return;
+    }
     // enn
     if (phase1 == true)
     {
@@ -97,6 +106,15 @@ void StepAF(bool phase1, bool phase2, bool cool)
 // Шаг насоса B вперед
 void StepBF(bool phase1, bool phase2, bool cool)
 {
+    if (BExt == 1) {
+        bitWrite(bitw, BSt, 1);
+        mcp.writeGPIOAB(bitw);
+        delayMicroseconds(BRet);
+        bitWrite(bitw, BSt, 0);
+        mcp.writeGPIOAB(bitw);
+        delayMicroseconds(BDel);
+        return;
+    }
     // enn
     if (phase1 == true)
     {

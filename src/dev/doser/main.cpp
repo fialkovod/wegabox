@@ -10,6 +10,11 @@
     int AC = 6;
     int AD = 7;
 
+    int AExt = 0;
+    int ALv = 1;
+    int AEn = 12;
+    int ASt = 13;
+
     int BOn = 1;
     int BDel=700;
     int BRet=700;
@@ -19,6 +24,11 @@
     int BC = 10;
     int BD = 11;
     
+    int BExt = 0;
+    int BLv = 1;
+    int BEn = 14;
+    int BSt = 15;
+
     long del = 700; 
     long ret = 1500;
     int stap = 1;
